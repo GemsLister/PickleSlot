@@ -7,9 +7,10 @@ use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['name', 'type', 'surface', 'hourly_rate', 'is_active', 'description'])]
+#[Fillable(['name', 'type', 'surface', 'hourly_rate', 'is_active', 'description', 'image_path'])]
 class Court extends Model
 {
     /** @use HasFactory<CourtFactory> */
@@ -27,11 +28,23 @@ class Court extends Model
     }
 
     /**
-     * @return HasMany<Reservation, $this>
+     * Get the fully qualified URL for this court image.
      */
-    public function reservations(): HasMany
+    public function getImageUrlAttribute(): ?string
     {
-        return $this->hasMany(Reservation::class);
+        if (! $this->image_path) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->image_path);
+    }
+
+    /**
+     * @return BelongsToMany<Reservation, $this>
+     */
+    public function reservations(): BelongsToMany
+    {
+        return $this->belongsToMany(Reservation::class);
     }
 
     /**
