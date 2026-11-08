@@ -25,13 +25,13 @@ class DashboardController extends Controller
         $paddleCount = Equipment::paddles()->sum('stock');
         $ballCount = Equipment::balls()->sum('stock');
 
-        $todayReservations = Reservation::with(['court', 'user'])
+        $todayReservations = Reservation::with(['court', 'courts', 'user'])
             ->where('date', now()->toDateString())
             ->where('status', 'confirmed')
             ->orderBy('start_time')
             ->get();
 
-        $recentReservations = Reservation::with(['court', 'user', 'reservationEquipments.equipment'])
+        $recentReservations = Reservation::with(['court', 'courts', 'user', 'reservationEquipments.equipment'])
             ->orderBy('created_at', 'desc')
             ->take(8)
             ->get();
