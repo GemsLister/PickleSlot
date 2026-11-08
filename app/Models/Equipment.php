@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Facades\Storage;
 
-#[Fillable(['name', 'category', 'price', 'stock', 'is_active', 'description'])]
+#[Fillable(['name', 'category', 'price', 'stock', 'is_active', 'description', 'image_path'])]
 class Equipment extends Model
 {
     /** @use HasFactory<EquipmentFactory> */
@@ -25,6 +26,18 @@ class Equipment extends Model
             'stock' => 'integer',
             'is_active' => 'boolean',
         ];
+    }
+
+    /**
+     * Get the fully qualified URL for this equipment image.
+     */
+    public function getImageUrlAttribute(): ?string
+    {
+        if (! $this->image_path) {
+            return null;
+        }
+
+        return Storage::disk('public')->url($this->image_path);
     }
 
     /**
