@@ -33,16 +33,8 @@
             <td class="py-4 px-4 text-center font-bold text-slate-700">{{ $court->reservations_count }}</td>
             <td class="py-4 px-4 text-right">
                 <div class="flex items-center justify-end gap-2">
-                    <a href="{{ route('admin.courts.edit', $court) }}" class="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                        Edit
-                    </a>
-                    <form method="POST" action="{{ route('admin.courts.destroy', $court) }}" onsubmit="return confirm('Delete court {{ $court->name }}?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="rounded-lg border border-red-200 text-red-600 px-2.5 py-1 text-xs font-semibold hover:bg-red-50">
-                            Delete
-                        </button>
-                    </form>
+                    <x-buttons.edit-button :href="route('admin.courts.edit', $court)" />
+                    <x-buttons.delete-button :action="route('admin.courts.destroy', $court)" type="court" />
                 </div>
             </td>
         </tr>

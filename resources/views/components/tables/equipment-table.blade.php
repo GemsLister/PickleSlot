@@ -30,16 +30,8 @@
             </td>
             <td class="py-4 px-4 text-right">
                 <div class="flex items-center justify-end gap-2">
-                    <a href="{{ route('admin.equipment.edit', $item) }}" class="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                        Edit
-                    </a>
-                    <form method="POST" action="{{ route('admin.equipment.destroy', $item) }}" onsubmit="return confirm('Delete this equipment item?')">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="rounded-lg border border-red-200 text-red-600 px-2.5 py-1 text-xs font-semibold hover:bg-red-50">
-                            Delete
-                        </button>
-                    </form>
+                    <x-buttons.edit-button :href="route('admin.equipment.edit', $item)" />
+                    <x-buttons.delete-button :action="route('admin.equipment.destroy', $item)" type="equipment item" />
                 </div>
             </td>
         </tr>
