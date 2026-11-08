@@ -1,4 +1,4 @@
-<form action="{{ route('admin.equipment.store') }}" method="POST" class="space-y-5">
+<form action="{{ route('admin.equipment.store') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
     @csrf
 
     <div>
@@ -34,6 +34,13 @@
         <label for="description" class="block text-sm font-semibold text-slate-700">Item Description</label>
         <textarea id="description" name="description" rows="3" placeholder="Grip size, core material, indoor/outdoor ball specs..."
             class="mt-1 block w-full rounded-xl border border-slate-300 p-3 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">{{ old('description') }}</textarea>
+    </div>
+
+    <div>
+        <label for="image" class="block text-sm font-semibold text-slate-700">Equipment Image</label>
+        <input id="image" name="image" type="file" accept="image/*"
+            class="mt-1 block w-full rounded-xl border border-slate-300 bg-white px-3.5 py-2.5 text-sm text-slate-900 shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-emerald-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-emerald-700 hover:file:bg-emerald-100 focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
+        <p class="mt-1 text-xs text-slate-500">Upload a product photo for this equipment item. Supported: JPG, PNG, GIF, WEBP.</p>
     </div>
 
     <div class="flex items-center gap-2">
