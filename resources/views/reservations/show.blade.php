@@ -56,9 +56,11 @@
             <!-- Court & Schedule Grid -->
             <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
                 <div class="rounded-xl bg-slate-50 p-4 border border-slate-100">
-                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Court</p>
-                    <p class="mt-1 font-bold text-slate-900 text-base">{{ $reservation->court->name }}</p>
-                    <p class="text-xs text-slate-500 capitalize">{{ $reservation->court->type }} • {{ $reservation->court->surface }}</p>
+                    <p class="text-xs font-bold uppercase tracking-wider text-slate-400">{{ $reservation->displayCourts()->count() > 1 ? 'Courts' : 'Court' }}</p>
+                    @foreach ($reservation->displayCourts() as $court)
+                        <p class="mt-1 font-bold text-slate-900 text-base">{{ $court->name }}</p>
+                        <p class="text-xs text-slate-500 capitalize">{{ $court->type }} • {{ $court->surface }}</p>
+                    @endforeach
                 </div>
                 <div class="rounded-xl bg-slate-50 p-4 border border-slate-100">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Date</p>
@@ -68,7 +70,7 @@
                 <div class="rounded-xl bg-slate-50 p-4 border border-slate-100">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Time Slot</p>
                     <p class="mt-1 font-bold text-slate-900 text-base">{{ substr((string) $reservation->start_time, 0, 5) }} – {{ substr((string) $reservation->end_time, 0, 5) }}</p>
-                    <p class="text-xs text-slate-500">1-Hour Session</p>
+                    <p class="text-xs text-slate-500">Selected session</p>
                 </div>
                 <div class="rounded-xl bg-slate-50 p-4 border border-slate-100">
                     <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Player</p>
@@ -120,7 +122,7 @@
             <!-- Price Breakdown Calculation -->
             <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-6 space-y-2.5 text-sm">
                 <div class="flex items-center justify-between text-slate-600">
-                    <span>Court Fee (1 hour @ ${{ number_format($reservation->court_rate, 2) }}/hr):</span>
+                    <span>Court Fee ({{ substr((string) $reservation->start_time, 0, 5) }}–{{ substr((string) $reservation->end_time, 0, 5) }} @ ${{ number_format($reservation->court_rate, 2) }}/hr{{ $reservation->displayCourts()->count() > 1 ? ' combined across '.$reservation->displayCourts()->count().' courts' : '' }}):</span>
                     <span class="font-bold text-slate-900">${{ number_format($reservation->court_total, 2) }}</span>
                 </div>
                 <div class="flex items-center justify-between text-slate-600">
@@ -154,4 +156,3 @@
     </div>
 </div>
 @endsection
-
