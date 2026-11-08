@@ -94,7 +94,7 @@
                                 <td class="py-3.5 px-4 font-bold text-slate-900">
                                     {{ substr((string) $res->start_time, 0, 5) }} – {{ substr((string) $res->end_time, 0, 5) }}
                                 </td>
-                                <td class="py-3.5 px-4 font-semibold text-slate-800">{{ $res->court->name }}</td>
+                                <td class="py-3.5 px-4 font-semibold text-slate-800">{{ $res->displayCourts()->pluck('name')->join(', ') }}</td>
                                 <td class="py-3.5 px-4 text-slate-600">{{ $res->user->name }}</td>
                                 <td class="py-3.5 px-4 text-right font-bold text-slate-900">${{ number_format($res->total_price, 2) }}</td>
                                 <td class="py-3.5 px-4 text-center">
@@ -136,7 +136,7 @@
                     @foreach ($recentReservations as $res)
                         <tr>
                             <td class="py-3.5 px-4 font-bold text-slate-900">#{{ $res->id }}</td>
-                            <td class="py-3.5 px-4 font-semibold text-slate-800">{{ $res->court->name }}</td>
+                            <td class="py-3.5 px-4 font-semibold text-slate-800">{{ $res->displayCourts()->pluck('name')->join(', ') }}</td>
                             <td class="py-3.5 px-4 text-slate-600">{{ $res->user->name }}</td>
                             <td class="py-3.5 px-4 text-slate-600">
                                 {{ $res->date->format('M d, Y') }} ({{ substr((string) $res->start_time, 0, 5) }}-{{ substr((string) $res->end_time, 0, 5) }})
@@ -162,4 +162,3 @@
     </div>
 </div>
 @endsection
-
