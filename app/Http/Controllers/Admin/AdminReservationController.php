@@ -7,6 +7,7 @@ use App\Models\Court;
 use App\Models\Reservation;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class AdminReservationController extends Controller
@@ -20,12 +21,12 @@ class AdminReservationController extends Controller
         $status = $request->query('status');
         $date = $request->query('date');
 
-        $query = Reservation::with(['court', 'user', 'reservationEquipments.equipment'])
+        $query = Reservation::with(['court', 'courts', 'user', 'reservationEquipments.equipment'])
             ->orderBy('date', 'desc')
             ->orderBy('start_time', 'desc');
 
         if ($courtId) {
-            $query->where('court_id', $courtId);
+            $query->forCourts([(int) $courtId]);
         }
 
         if ($status) {
@@ -51,7 +52,13 @@ class AdminReservationController extends Controller
             'status' => ['required', 'string', 'in:confirmed,completed,cancelled'],
         ]);
 
-        $reservation->update(['status' => $validated['status']]);
+        DB::transaction(function () use ($reservation, $validated) {
+            $lockedReservation = Reservation::query()
+                ->lockForUpdate()
+                ->findOrFail($reservation->id);
+
+            $lockedReservation->transitionStatus($validated['status']);
+        });
 
         return back()->with('status', "Reservation #{$reservation->id} status updated to {$validated['status']}.");
     }
