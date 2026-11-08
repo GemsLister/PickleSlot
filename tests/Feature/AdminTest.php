@@ -3,7 +3,9 @@
 use App\Models\Court;
 use App\Models\Equipment;
 use App\Models\Reservation;
+use App\Models\ReservationEquipment;
 use App\Models\User;
+use Database\Seeders\EquipmentSeeder;
 
 test('non-admin players cannot access admin dashboard', function () {
     $player = User::factory()->create(['is_admin' => false]);
@@ -91,9 +93,30 @@ test('admin can create and edit equipment item', function () {
     expect((float) $equipment->fresh()->price)->toBe(8.00);
 });
 
+test('seeding equipment preserves the current available stock', function () {
+    $this->seed(EquipmentSeeder::class);
+    $paddle = Equipment::where('name', 'Pro Carbon Fiber Paddle (Selkirk Vanguard)')->firstOrFail();
+    $paddle->update(['stock' => 14]);
+
+    $this->seed(EquipmentSeeder::class);
+
+    expect($paddle->fresh()->stock)->toBe(14);
+});
+
 test('admin can update reservation status', function () {
     $admin = User::factory()->admin()->create();
-    $reservation = Reservation::factory()->create(['status' => 'confirmed']);
+    $reservation = Reservation::factory()->create([
+        'status' => 'confirmed',
+        'inventory_reserved' => true,
+    ]);
+    $paddle = Equipment::factory()->paddle()->create(['stock' => 3]);
+    ReservationEquipment::create([
+        'reservation_id' => $reservation->id,
+        'equipment_id' => $paddle->id,
+        'quantity' => 2,
+        'unit_price' => $paddle->price,
+        'total_price' => (float) $paddle->price * 2,
+    ]);
 
     $response = $this->actingAs($admin)->patch(route('admin.reservations.status', $reservation), [
         'status' => 'completed',
@@ -101,4 +124,15 @@ test('admin can update reservation status', function () {
 
     $response->assertSessionHas('status');
     expect($reservation->fresh()->status)->toBe('completed');
+    expect($paddle->fresh()->stock)->toBe(5);
+
+    $this->actingAs($admin)->patch(route('admin.reservations.status', $reservation), [
+        'status' => 'completed',
+    ]);
+    expect($paddle->fresh()->stock)->toBe(5);
+
+    $this->actingAs($admin)->patch(route('admin.reservations.status', $reservation), [
+        'status' => 'confirmed',
+    ]);
+    expect($paddle->fresh()->stock)->toBe(3);
 });
