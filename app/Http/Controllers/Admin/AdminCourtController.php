@@ -38,6 +38,10 @@ class AdminCourtController extends Controller
         $validated = $request->validated();
         $validated['is_active'] = $request->boolean('is_active', true);
 
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('courts', 'public');
+        }
+
         Court::create($validated);
 
         return redirect()->route('admin.courts.index')
@@ -59,6 +63,14 @@ class AdminCourtController extends Controller
     {
         $validated = $request->validated();
         $validated['is_active'] = $request->boolean('is_active');
+
+        if ($request->boolean('remove_image')) {
+            $validated['image_path'] = null;
+        }
+
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = $request->file('image')->store('courts', 'public');
+        }
 
         $court->update($validated);
 
