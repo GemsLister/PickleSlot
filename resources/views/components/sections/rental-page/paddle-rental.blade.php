@@ -12,6 +12,18 @@
         @foreach ($paddles as $paddle)
         <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition">
             <div>
+                @if ($paddle->image_url)
+                    <div class="mb-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-50">
+                        <img src="{{ $paddle->image_url }}" alt="{{ $paddle->name }}" class="h-48 w-full object-cover">
+                    </div>
+                @else
+                    <div class="mb-4 flex h-48 items-center justify-center rounded-xl border border-slate-200 bg-gradient-to-br from-purple-50 to-slate-100 text-purple-600">
+                        <svg class="h-12 w-12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l5.5 5.5a2.121 2.121 0 01-3 3L11 13M11 13L6.5 8.5a4.5 4.5 0 016.364-6.364L14 3.25M3 21l3.5-3.5" />
+                        </svg>
+                    </div>
+                @endif
+
                 <div class="flex items-center justify-between mb-3">
                     <span class="rounded-lg bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 text-xs font-semibold uppercase">
                         Paddle
