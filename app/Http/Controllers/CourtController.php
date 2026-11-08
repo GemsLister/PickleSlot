@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Court;
+use App\Models\Reservation;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -33,8 +34,9 @@ class CourtController extends Controller
     {
         abort_unless($court->is_active, 404);
 
-        $upcomingReservations = $court->reservations()
+        $upcomingReservations = Reservation::query()
             ->activeStatus()
+            ->forCourts([$court->id])
             ->where('date', '>=', now()->toDateString())
             ->orderBy('date')
             ->orderBy('start_time')
