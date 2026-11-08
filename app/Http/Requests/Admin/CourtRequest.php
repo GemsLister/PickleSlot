@@ -28,6 +28,8 @@ class CourtRequest extends FormRequest
             'hourly_rate' => ['required', 'numeric', 'min:0'],
             'is_active' => ['nullable', 'boolean'],
             'description' => ['nullable', 'string', 'max:1000'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:2048'],
+            'remove_image' => ['nullable', 'boolean'],
         ];
     }
 }
