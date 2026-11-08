@@ -56,7 +56,13 @@ class EquipmentSeeder extends Seeder
         ];
 
         foreach ($equipment as $item) {
-            Equipment::updateOrCreate(['name' => $item['name']], $item);
+            $equipmentItem = Equipment::firstOrNew(['name' => $item['name']]);
+
+            if ($equipmentItem->exists) {
+                unset($item['stock']);
+            }
+
+            $equipmentItem->fill($item)->save();
         }
     }
 }
