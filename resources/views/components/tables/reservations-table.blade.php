@@ -25,8 +25,8 @@
                 </a>
             </td>
             <td class="py-4 px-4 font-semibold text-slate-800">
-                {{ $res->court->name }}
-                <span class="block text-xs font-normal text-slate-400 capitalize">{{ $res->court->type }}</span>
+                {{ $res->displayCourts()->pluck('name')->join(', ') }}
+                <span class="block text-xs font-normal text-slate-400 capitalize">{{ $res->displayCourts()->pluck('type')->unique()->join(', ') }}</span>
             </td>
             <td class="py-4 px-4">
                 <p class="font-semibold text-slate-900">{{ $res->user->name }}</p>
