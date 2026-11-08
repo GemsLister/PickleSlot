@@ -1,0 +1,40 @@
+<section class="mt-14">
+    <div class="flex items-center gap-2 mb-6">
+        <span class="flex h-8 w-8 items-center justify-center rounded-lg bg-amber-100 text-amber-700 font-bold">
+            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <circle cx="12" cy="12" r="9" stroke-width="2" />
+            </svg>
+        </span>
+        <h2 class="text-2xl font-bold text-slate-900">Official Pickleballs</h2>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        @foreach ($balls as $ball)
+        <div class="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition">
+            <div>
+                <div class="flex items-center justify-between mb-3">
+                    <span class="rounded-lg bg-amber-50 text-amber-700 border border-amber-200 px-2.5 py-0.5 text-xs font-semibold uppercase">
+                        Balls Pack
+                    </span>
+                    <span class="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
+                        {{ $ball->stock }} Packs In Stock
+                    </span>
+                </div>
+
+                <h3 class="text-lg font-bold text-slate-900">{{ $ball->name }}</h3>
+                <p class="mt-2 text-sm text-slate-600">{{ $ball->description }}</p>
+            </div>
+
+            <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
+                <div>
+                    <span class="text-xs text-slate-400">Rental Price</span>
+                    <p class="text-xl font-bold text-slate-900">${{ number_format($ball->price, 2) }} <span class="text-xs font-normal text-slate-500">/ session</span></p>
+                </div>
+                <x-buttons.primary-button href="{{ route('reservations.create') }}">
+                    Rent in Booking
+                </x-buttons.primary-button>
+            </div>
+        </div>
+        @endforeach
+    </div>
+</section>
