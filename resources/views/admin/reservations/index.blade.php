@@ -16,12 +16,12 @@
 
     <!-- Filter Form -->
     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm mb-6">
-        <x-form.reservations-form :reservations="$reservations" />
+        <x-forms.reservations-form :courts="$courts" :court-id="$courtId" :status="$status" :date="$date" />
     </div>
 
     <!-- Reservations Table -->
     <div class="rounded-2xl border border-slate-200 bg-white overflow-hidden shadow-sm">
-        <x-table.reservations-table :reservations="$reservations" />
+        <x-tables.reservations-table :reservations="$reservations" />
     </div>
 </div>
 @endsection
