@@ -26,7 +26,7 @@ class ReservationController extends Controller
         $user = Auth::user();
         $status = $request->query('status');
 
-        $query = Reservation::with(['court', 'reservationEquipments.equipment'])
+        $query = Reservation::with(['court', 'courts', 'reservationEquipments.equipment'])
             ->where('user_id', $user->id);
 
         if ($status === 'upcoming') {
@@ -68,15 +68,21 @@ class ReservationController extends Controller
         $paddles = Equipment::active()->paddles()->get();
         $balls = Equipment::active()->balls()->get();
 
-        $selectedCourtId = (int) $request->query('court_id', $courts->first()?->id ?? 0);
+        $selectedCourtIds = old(
+            'court_ids',
+            [$request->query('court_id', $courts->first()?->id)]
+        );
+        $selectedCourtIds = array_values(array_intersect(
+            $courts->modelKeys(),
+            array_map('intval', (array) $selectedCourtIds)
+        ));
         $selectedDate = $request->query('date', now()->format('Y-m-d'));
 
-        // Precompute booked slots for default view
         $bookedSlots = [];
-        if ($selectedCourtId) {
+        if ($selectedCourtIds !== []) {
             $bookedSlots = Reservation::query()
                 ->activeStatus()
-                ->where('court_id', $selectedCourtId)
+                ->forCourts($selectedCourtIds)
                 ->whereDate('date', $selectedDate)
                 ->get(['start_time', 'end_time'])
                 ->map(fn ($r) => [
@@ -86,7 +92,7 @@ class ReservationController extends Controller
                 ->all();
         }
 
-        return view('reservations.create', compact('courts', 'paddles', 'balls', 'selectedCourtId', 'selectedDate', 'bookedSlots'));
+        return view('reservations.create', compact('courts', 'paddles', 'balls', 'selectedCourtIds', 'selectedDate', 'bookedSlots'));
     }
 
     /**
@@ -103,7 +109,7 @@ class ReservationController extends Controller
 
         $reservations = Reservation::query()
             ->activeStatus()
-            ->where('court_id', $courtId)
+            ->forCourts([$courtId])
             ->whereDate('date', $date)
             ->get(['start_time', 'end_time']);
 
@@ -123,7 +129,7 @@ class ReservationController extends Controller
         $validated = $request->validated();
         $user = Auth::user();
 
-        $court = Court::findOrFail($validated['court_id']);
+        $courtIds = array_map('intval', $validated['court_ids']);
 
         $startDateTime = Carbon::parse($validated['date'].' '.$validated['start_time']);
         $endDateTime = Carbon::parse($validated['date'].' '.$validated['end_time']);
@@ -134,16 +140,26 @@ class ReservationController extends Controller
             ]);
         }
 
-        $durationMinutes = $startDateTime->diffInMinutes($endDateTime);
-        if ($durationMinutes <= 0) {
+        $durationMinutes = (int) $startDateTime->diffInMinutes($endDateTime);
+        if (
+            $durationMinutes <= 0
+            || $durationMinutes % 60 !== 0
+            || $durationMinutes !== (int) $validated['duration_hours'] * 60
+            || $startDateTime->minute !== 0
+            || $endDateTime->minute !== 0
+        ) {
             throw ValidationException::withMessages([
-                'end_time' => 'End time must be after start time.',
+                'end_time' => 'Choose whole-hour times that match the selected reservation duration.',
+            ]);
+        }
+
+        if ($startDateTime->format('H:i') < '07:00' || $endDateTime->format('H:i') > '22:00') {
+            throw ValidationException::withMessages([
+                'start_time' => 'Reservations must be within facility operating hours (07:00 AM–10:00 PM).',
             ]);
         }
 
         $durationHours = $durationMinutes / 60;
-        $courtTotal = round((float) $court->hourly_rate * $durationHours, 2);
-
         $startTimeNormalized = strlen($validated['start_time']) === 5 ? $validated['start_time'].':00' : $validated['start_time'];
         $endTimeNormalized = strlen($validated['end_time']) === 5 ? $validated['end_time'].':00' : $validated['end_time'];
 
@@ -155,16 +171,32 @@ class ReservationController extends Controller
         $reservation = DB::transaction(function () use (
             $validated,
             $user,
-            $court,
-            $courtTotal,
+            $courtIds,
+            $durationHours,
             $selectedEquipment,
             $startTimeNormalized,
             $endTimeNormalized
         ) {
-            // 1. Conflict Check: check if court is already booked for an overlapping time
+            $courts = Court::query()
+                ->active()
+                ->whereKey($courtIds)
+                ->orderBy('id')
+                ->lockForUpdate()
+                ->get();
+
+            if ($courts->count() !== count($courtIds)) {
+                throw ValidationException::withMessages([
+                    'court_ids' => 'Choose one or more active courts to reserve.',
+                ]);
+            }
+
+            $court = $courts->firstOrFail();
+            $courtRate = round((float) $courts->sum(fn (Court $court): float => (float) $court->hourly_rate), 2);
+            $courtTotal = round($courtRate * $durationHours, 2);
+
             $hasConflict = Reservation::query()
                 ->activeStatus()
-                ->where('court_id', $court->id)
+                ->forCourts($courtIds)
                 ->whereDate('date', $validated['date'])
                 ->where(function ($query) use ($startTimeNormalized, $endTimeNormalized) {
                     $query->where('start_time', '<', $endTimeNormalized)
@@ -175,7 +207,7 @@ class ReservationController extends Controller
 
             if ($hasConflict) {
                 throw ValidationException::withMessages([
-                    'start_time' => 'This court is already reserved during the requested time slot. Please choose another time or court.',
+                    'start_time' => 'At least one selected court is already reserved during the requested time slot. Please choose another time or court.',
                 ]);
             }
 
@@ -185,7 +217,11 @@ class ReservationController extends Controller
 
             if (! empty($selectedEquipment)) {
                 $equipmentIds = array_keys($selectedEquipment);
-                $equipmentModels = Equipment::whereIn('id', $equipmentIds)->lockForUpdate()->get()->keyBy('id');
+                $equipmentModels = Equipment::whereIn('id', $equipmentIds)
+                    ->orderBy('id')
+                    ->lockForUpdate()
+                    ->get()
+                    ->keyBy('id');
 
                 foreach ($selectedEquipment as $eqId => $requestedQty) {
                     $equipment = $equipmentModels->get($eqId);
@@ -195,21 +231,11 @@ class ReservationController extends Controller
 
                     $requestedQty = (int) $requestedQty;
 
-                    // Calculate total quantity currently booked for this equipment during the overlapping window
-                    $alreadyRentedQty = DB::table('reservation_equipment')
-                        ->join('reservations', 'reservation_equipment.reservation_id', '=', 'reservations.id')
-                        ->whereDate('reservations.date', $validated['date'])
-                        ->where('reservations.status', '!=', 'cancelled')
-                        ->where('reservations.start_time', '<', $endTimeNormalized)
-                        ->where('reservations.end_time', '>', $startTimeNormalized)
-                        ->where('reservation_equipment.equipment_id', $equipment->id)
-                        ->sum('reservation_equipment.quantity');
-
-                    $availableStock = $equipment->stock - $alreadyRentedQty;
+                    $availableStock = $equipment->stock;
 
                     if ($requestedQty > $availableStock) {
                         throw ValidationException::withMessages([
-                            'equipment' => "Insufficient stock for {$equipment->name}. Only {$availableStock} available for this time window.",
+                            'equipment' => "Insufficient stock for {$equipment->name}. Only {$availableStock} available.",
                         ]);
                     }
 
@@ -234,13 +260,15 @@ class ReservationController extends Controller
                 'date' => $validated['date'],
                 'start_time' => $validated['start_time'],
                 'end_time' => $validated['end_time'],
-                'court_rate' => $court->hourly_rate,
+                'court_rate' => $courtRate,
                 'court_total' => $courtTotal,
                 'equipment_total' => $equipmentTotal,
                 'total_price' => $totalPrice,
                 'status' => 'confirmed',
                 'notes' => $validated['notes'] ?? null,
             ]);
+
+            $reservation->courts()->attach($courts->modelKeys());
 
             // 4. Attach Equipment records
             foreach ($equipmentToAttach as $item) {
@@ -252,6 +280,8 @@ class ReservationController extends Controller
                     'total_price' => $item['total_price'],
                 ]);
             }
+
+            $reservation->reserveEquipmentStock();
 
             return $reservation;
         });
@@ -270,7 +300,7 @@ class ReservationController extends Controller
             abort(403, 'Unauthorized access to this reservation.');
         }
 
-        $reservation->load(['court', 'reservationEquipments.equipment', 'user']);
+        $reservation->load(['court', 'courts', 'reservationEquipments.equipment', 'user']);
 
         return view('reservations.show', compact('reservation'));
     }
@@ -285,11 +315,23 @@ class ReservationController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
-        if (! $reservation->canBeCancelled()) {
+        $wasCancelled = DB::transaction(function () use ($reservation) {
+            $reservation = Reservation::query()
+                ->lockForUpdate()
+                ->findOrFail($reservation->id);
+
+            if (! $reservation->canBeCancelled()) {
+                return false;
+            }
+
+            $reservation->transitionStatus('cancelled');
+
+            return true;
+        });
+
+        if (! $wasCancelled) {
             return back()->with('error', 'Only future, non-cancelled reservations can be cancelled.');
         }
-
-        $reservation->update(['status' => 'cancelled']);
 
         return back()->with('status', 'Reservation has been cancelled successfully.');
     }
