@@ -1,58 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# PickleSlot
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+PickleSlot is a Laravel application for browsing pickleball courts and rental equipment, reserving court time, and managing facility inventory.
 
-## About Laravel
+## Features
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- Browse courts and rental equipment.
+- Register, sign in, and manage a player profile.
+- Check availability and book one or more courts for a time slot.
+- Add paddle and ball rentals to a reservation.
+- View and manage personal reservations.
+- Administer courts, equipment, and reservation statuses through the admin area.
+- Restrict booking actions to player accounts; administrators use the facility management area.
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Requirements
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- PHP 8.3 or later (the Docker image uses PHP 8.5)
+- Composer 2
+- Node.js 22 and npm
+- PostgreSQL for a PostgreSQL-backed local setup, or SQLite for a lightweight local setup
 
-## Learning Laravel
+## Local development
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+1. Install PHP and JavaScript dependencies:
 
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+   ```sh
+   composer install
+   npm install
+   ```
 
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
+2. Create your local environment file and application key:
 
-## Agentic Development
+   ```sh
+   cp .env.example .env
+   php artisan key:generate
+   ```
 
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+   On Windows PowerShell, use `Copy-Item .env.example .env` instead of `cp`.
 
-```bash
-composer require laravel/boost --dev
+3. Configure the database in `.env`.
 
-php artisan boost:install
+   For SQLite, set:
+
+   ```dotenv
+   DB_CONNECTION=sqlite
+   DB_DATABASE=database/database.sqlite
+   ```
+
+   The repository includes `database/database.sqlite`. If it is missing, create an empty file there before migrating.
+
+   For PostgreSQL, set `DB_CONNECTION=pgsql` and provide `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, and `DB_PASSWORD` for your local database. Never commit real credentials.
+
+4. Run migrations:
+
+   ```sh
+   php artisan migrate
+   ```
+
+5. Start the Laravel and Vite development servers in separate terminals:
+
+   ```sh
+   php artisan serve
+   ```
+
+   ```sh
+   npm run dev
+   ```
+
+   Open `http://127.0.0.1:8000`.
+
+To compile frontend assets for production:
+
+```sh
+npm run build
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Tests
 
-## Contributing
+Run the Pest test suite with:
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+```sh
+php artisan test
+```
 
-## Code of Conduct
+## Seed data
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+The database seeders provide sample courts and equipment:
 
-## Security Vulnerabilities
+```sh
+php artisan db:seed --class=CourtSeeder --force
+php artisan db:seed --class=EquipmentSeeder --force
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+The default `DatabaseSeeder` also creates demo player and administrator accounts with a shared default password, plus sample reservations. Use it only in a local or disposable database:
 
-## License
+```sh
+php artisan db:seed
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Do not run the default seeder in production. In particular, do not use `php artisan migrate:fresh` against a database with data you need; it drops existing tables.
+
+## Deploy to Render
+
+The repository includes a multi-stage `Dockerfile` that builds the Vite assets, installs production PHP dependencies, serves Laravel with Apache, enables PostgreSQL support, and runs migrations before starting Apache.
+
+1. Push the deployment files to the Git branch you intend to deploy. In Render, create a **Web Service** from this GitHub repository and select **Docker** as the runtime. Use the repository root as the root directory.
+2. Choose a Render region. If using Render Postgres, put the web service and database in the same region.
+3. Add these environment variables to the web service:
+
+   | Key | Value |
+   | --- | --- |
+   | `APP_NAME` | `PickleSlot` |
+   | `APP_ENV` | `production` |
+   | `APP_DEBUG` | `false` |
+   | `APP_KEY` | Generate locally with `php artisan key:generate --show`; keep it secret |
+   | `DB_CONNECTION` | `pgsql` |
+   | `DB_URL` | The database connection URL. Use Render Postgres's internal URL, or your PostgreSQL provider's connection string |
+   | `SESSION_DRIVER` | `database` |
+   | `CACHE_STORE` | `database` |
+   | `QUEUE_CONNECTION` | `database` |
+
+   With Neon, use its PostgreSQL connection string, which should include `sslmode=require`. Do not paste database credentials into source files or commit them.
+
+4. Leave the Docker build and start commands to Render's Docker integration. The image listens on port 80. The container runs `php artisan migrate --force` at startup.
+5. After Render assigns the public service URL, set `APP_URL` to that full HTTPS URL, such as `https://your-service.onrender.com`.
+6. To initialize production catalog data, use the Render Shell to run the `CourtSeeder` and `EquipmentSeeder` commands shown in [Seed data](#seed-data). Avoid the default `DatabaseSeeder`, which creates demo users.
+7. Register your first account through the app, then use the Render Shell to promote that account to administrator. Replace the email with the address you registered:
+
+   ```sh
+   php artisan tinker --execute='App\Models\User::where("email", "admin@example.com")->update(["is_admin" => true]);'
+   ```
+
+   Registration creates player accounts by default. Keep administrator access limited to trusted accounts.
+
+Uploaded public files are stored under `storage/app/public`. If the app needs uploaded files to survive deployments, attach persistent storage at `/var/www/html/storage/app/public` in Render.
+
+## Environment and secrets
+
+`.env` is local-only and must not be committed. Use Render's environment-variable settings for production configuration and secrets. If a database password or application key is exposed, rotate it.
