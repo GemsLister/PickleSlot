@@ -17,6 +17,34 @@ test('reservation create page is accessible by authenticated users', function ()
         ->assertSee('value="2"', false);
 });
 
+test('administrators cannot access the player booking page', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->get(route('reservations.create'));
+
+    $response->assertForbidden();
+});
+
+test('administrators cannot submit a player booking', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->post(route('reservations.store'), []);
+
+    $response->assertForbidden();
+    $this->assertDatabaseCount('reservations', 0);
+});
+
+test('administrators see admin navigation instead of player navigation', function () {
+    $admin = User::factory()->admin()->create();
+
+    $response = $this->actingAs($admin)->get(route('profile.edit'));
+
+    $response->assertOk()
+        ->assertSee('Admin Center')
+        ->assertSee('My Profile')
+        ->assertDontSee(route('reservations.create'));
+});
+
 test('user can reserve a court with paddle and balls rental', function () {
     $user = User::factory()->create();
     $court = Court::factory()->create([
