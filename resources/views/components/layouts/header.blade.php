@@ -12,6 +12,7 @@
 
         <!-- Desktop Links -->
         <nav class="hidden md:flex items-center gap-1 sm:gap-2">
+            @guest
             <a href="{{ route('courts.index') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('courts.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
                 Courts
             </a>
@@ -21,9 +22,23 @@
             <a href="{{ route('reservations.create') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('reservations.create') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
                 Book a Slot
             </a>
-            @auth
+            @else
+            @if(!Auth::user()->is_admin)
+            <a href="{{ route('courts.index') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('courts.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
+                Courts
+            </a>
+            <a href="{{ route('equipment.index') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('equipment.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
+                Gear Rental
+            </a>
+            <a href="{{ route('reservations.create') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('reservations.create') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
+                Book a Slot
+            </a>
             <a href="{{ route('reservations.index') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('reservations.index') || request()->routeIs('reservations.show') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
                 My Bookings
+            </a>
+            @endif
+            <a href="{{ route('profile.edit') }}" class="rounded-lg px-3.5 py-2 text-sm font-medium {{ request()->routeIs('profile.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100' }} transition">
+                My Profile
             </a>
             @if(Auth::user()->is_admin)
             <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-1.5 rounded-lg px-3.5 py-2 text-sm font-semibold text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/60 transition">
@@ -33,7 +48,7 @@
                 Admin Center
             </a>
             @endif
-            @endauth
+            @endguest
         </nav>
 
         <!-- User Auth Buttons & Mobile Menu Toggle -->
@@ -74,6 +89,7 @@
 
     <!-- Mobile Drawer -->
     <div id="mobileNav" class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
+        @guest
         <a href="{{ route('courts.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('courts.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
             Courts
         </a>
@@ -83,15 +99,29 @@
         <a href="{{ route('reservations.create') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('reservations.create') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
             Book a Slot
         </a>
-        @auth
+        @else
+        @if(!Auth::user()->is_admin)
+        <a href="{{ route('courts.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('courts.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
+            Courts
+        </a>
+        <a href="{{ route('equipment.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('equipment.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
+            Gear Rental
+        </a>
+        <a href="{{ route('reservations.create') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('reservations.create') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
+            Book a Slot
+        </a>
         <a href="{{ route('reservations.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('reservations.index') || request()->routeIs('reservations.show') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
             My Bookings
+        </a>
+        @endif
+        <a href="{{ route('profile.edit') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('profile.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
+            My Profile
         </a>
         @if(Auth::user()->is_admin)
         <a href="{{ route('admin.dashboard') }}" class="block rounded-lg px-3 py-2 text-sm font-semibold text-amber-800 bg-amber-50">
             Admin Center
         </a>
         @endif
-        @endauth
+        @endguest
     </div>
 </header>
