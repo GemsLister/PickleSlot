@@ -10,10 +10,6 @@
                 <p class="mt-2 text-base text-slate-600">Explore regulation size courts with premium surfaces, LED lighting,
                     and weather-protected play. You can select multiple courts together when booking.</p>
             </div>
-            <!-- <a href="{{ route('reservations.create') }}"
-                    class="inline-flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-emerald-500 transition">
-                    Book Any Court
-                </a> -->
         </div>
 
         <!-- Filter Pills -->
@@ -71,14 +67,12 @@
                     </div>
 
                     <div class="mt-6 flex items-center gap-3 border-t border-slate-100 pt-4">
-                        <a href="{{ route('reservations.create', ['court_id' => $court->id]) }}"
-                            class="flex-1 rounded-xl bg-emerald-600 py-2.5 text-center text-sm font-bold text-white shadow-sm hover:bg-emerald-500 transition">
+                        <x-buttons.primary-button href="{{ route('reservations.create', ['court_id' => $court->id]) }}">
                             Select & Book
-                        </a>
-                        <a href="{{ route('courts.show', $court) }}"
-                            class="rounded-xl border border-slate-200 px-3.5 py-2.5 text-sm font-semibold text-slate-700 hover:bg-slate-50 transition">
+                        </x-buttons.primary-button>
+                        <x-buttons.secondary-button href="{{ route('courts.show', $court) }}">
                             View Schedule
-                        </a>
+                        </x-buttons.secondary-button>
                     </div>
                 </div>
             @empty
