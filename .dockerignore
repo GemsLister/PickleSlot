@@ -1,0 +1,11 @@
+.git
+.env
+.env.*
+node_modules
+vendor
+public/build
+public/hot
+public/storage
+storage/logs
+storage/app/public
+database/database.sqlite
