@@ -42,4 +42,4 @@ RUN mkdir -p storage/framework/cache storage/framework/sessions storage/framewor
 
 EXPOSE 80
 
-CMD ["sh", "-c", "chown -R www-data:www-data storage/framework storage/logs storage/app/public bootstrap/cache && php artisan storage:link --force && php artisan migrate --force && apache2ctl -M | grep 'mpm_' && exec apache2-foreground"]
+CMD ["sh", "-c", "rm -f /etc/apache2/mods-enabled/mpm_*.load /etc/apache2/mods-enabled/mpm_*.conf && a2enmod mpm_prefork rewrite && apache2ctl -t && apache2ctl -M | grep 'mpm_' && chown -R www-data:www-data storage/framework storage/logs storage/app/public bootstrap/cache && php artisan storage:link --force && php artisan migrate --force && exec apache2-foreground"]
