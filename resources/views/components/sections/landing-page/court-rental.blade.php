@@ -2,13 +2,13 @@
 <!-- Featured Courts Section -->
 <section class="py-16 sm:py-24 bg-white">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-12">
-            <div>
+        <div class="mb-8 flex flex-col gap-4 sm:mb-12 md:flex-row md:items-end md:justify-between">
+            <div data-reveal>
                 <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">State of the Art Facilities</span>
                 <h2 class="mt-1 text-3xl font-extrabold text-slate-900 tracking-tight sm:text-4xl">Available Courts</h2>
                 <p class="mt-2 text-slate-600 max-w-2xl">Each court is engineered with tournament regulation cushioning, high-visibility boundaries, and professional lighting.</p>
             </div>
-            <a href="{{ route('courts.index') }}" class="inline-flex items-center gap-1.5 text-sm font-semibold text-emerald-600 hover:text-emerald-700">
+            <a data-reveal href="{{ route('courts.index') }}" class="inline-flex items-center gap-1.5 self-start text-sm font-semibold text-emerald-600 transition hover:gap-2.5 hover:text-emerald-700 md:self-auto">
                 View all courts
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
@@ -16,9 +16,29 @@
             </a>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="mb-3 flex items-center justify-between sm:hidden">
+            <p class="flex items-center gap-2 text-xs font-medium text-slate-500">
+                Swipe to explore
+                <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14m-6-6 6 6-6 6" />
+                </svg>
+            </p>
+            <div class="flex gap-2">
+                <button type="button" data-carousel-prev aria-label="Show previous court" aria-controls="courtCarousel" disabled class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-emerald-500 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m15 18-6-6 6-6" />
+                    </svg>
+                </button>
+                <button type="button" data-carousel-next aria-label="Show next court" aria-controls="courtCarousel" class="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-300 bg-white text-slate-700 transition hover:border-emerald-500 hover:text-emerald-700 disabled:cursor-not-allowed disabled:opacity-40">
+                    <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m9 18 6-6-6-6" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+        <div id="courtCarousel" data-carousel role="region" aria-label="Available courts carousel" tabindex="0" class="scrollbar-hidden -mx-4 flex snap-x snap-mandatory gap-4 overflow-x-auto overscroll-x-contain px-4 pb-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-6 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3">
             @foreach ($courts as $court)
-                <div class="group relative flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-xl hover:border-emerald-300 transition-all duration-200">
+                <div data-reveal style="--reveal-delay: {{ ($loop->index % 3) * 90 }}ms" class="group relative flex w-[min(84vw,20rem)] shrink-0 snap-center flex-col justify-between rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-emerald-300 hover:shadow-xl sm:w-auto sm:shrink sm:p-6">
                     <div>
                         <!-- Type & Rate Badge -->
                         <div class="flex items-center justify-between gap-2 mb-4">

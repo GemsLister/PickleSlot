@@ -2,11 +2,11 @@
 <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur-md">
     <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <!-- Brand Logo -->
-        <a href="{{ route('home') }}" class="group flex items-center gap-2.5">
-            <img src="{{asset('images/pickleslot-logo.png')}}" alt="pickleslot-logo" class="h-10 w-auto">
+        <a href="{{ route('home') }}" class="group flex min-w-0 items-center gap-2 sm:gap-2.5">
+            <img src="{{asset('images/pickleslot-logo.png')}}" alt="pickleslot-logo" class="h-8 w-auto sm:h-10">
             <span class="flex flex-col">
-                <span class="text-xl font-bold tracking-tight text-slate-900 leading-none">Pickle<span class="text-emerald-600">Slot</span></span>
-                <span class="text-[10px] font-semibold uppercase tracking-wider text-slate-400 mt-0.5">Court & Gear Rentals</span>
+                <span class="text-lg font-bold leading-none tracking-tight text-slate-900 sm:text-xl">Pickle<span class="text-emerald-600">Slot</span></span>
+                <span class="mt-0.5 hidden text-[10px] font-semibold uppercase tracking-wider text-slate-400 sm:block">Court & Gear Rentals</span>
             </span>
         </a>
 
@@ -54,10 +54,10 @@
         <!-- User Auth Buttons & Mobile Menu Toggle -->
         <div class="flex items-center gap-2.5">
             @guest
-            <a href="{{ route('login') }}" class="text-sm font-semibold text-slate-700 hover:text-emerald-600 px-3 py-2 transition">
+            <a href="{{ route('login') }}" class="hidden px-3 py-2 text-sm font-semibold text-slate-700 transition hover:text-emerald-600 sm:inline-flex">
                 Log in
             </a>
-            <x-buttons.primary-button href="{{ route('register') }}">
+            <x-buttons.primary-button href="{{ route('register') }}" data-header-signup class="hidden sm:inline-flex">
                 Sign up
             </x-buttons.primary-button>
             @else
@@ -76,7 +76,7 @@
             @endguest
 
             <!-- Mobile Menu Button -->
-            <button type="button" onclick="toggleMobileNav()" class="md:hidden flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 text-slate-600 hover:bg-slate-50">
+            <button type="button" onclick="toggleMobileNav()" aria-controls="mobileNav" aria-expanded="false" aria-label="Open navigation menu" class="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-slate-200 text-slate-600 transition hover:bg-slate-50 md:hidden">
                 <svg id="menuOpenIcon" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                 </svg>
@@ -88,7 +88,8 @@
     </div>
 
     <!-- Mobile Drawer -->
-    <div id="mobileNav" class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-1">
+    <nav id="mobileNav" aria-label="Mobile navigation" aria-hidden="true" inert class="mobile-nav border-t border-slate-200 bg-white px-4 md:hidden">
+        <div class="space-y-1">
         @guest
         <a href="{{ route('courts.index') }}" class="block rounded-lg px-3 py-2 text-sm font-medium {{ request()->routeIs('courts.*') ? 'text-emerald-700 bg-emerald-50' : 'text-slate-700 hover:bg-slate-50' }}">
             Courts
@@ -123,5 +124,12 @@
         </a>
         @endif
         @endguest
-    </div>
+        </div>
+        @guest
+            <div class="mt-3 flex gap-2 border-t border-slate-100 pt-3">
+                <a href="{{ route('login') }}" class="flex-1 rounded-lg px-3 py-2 text-center text-sm font-semibold text-slate-700 transition hover:bg-slate-50">Log in</a>
+                <a href="{{ route('register') }}" class="flex-1 rounded-lg bg-emerald-600 px-3 py-2 text-center text-sm font-semibold text-white transition hover:bg-emerald-500">Sign up</a>
+            </div>
+        @endguest
+    </nav>
 </header>

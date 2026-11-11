@@ -24,11 +24,20 @@
     <script>
     function toggleMobileNav() {
         const nav = document.getElementById('mobileNav');
+        const menuButton = document.querySelector('[aria-controls="mobileNav"]');
+        const header = menuButton.closest('header');
         const openIcon = document.getElementById('menuOpenIcon');
         const closeIcon = document.getElementById('menuCloseIcon');
-        nav.classList.toggle('hidden');
-        openIcon.classList.toggle('hidden');
-        closeIcon.classList.toggle('hidden');
+        const shouldOpen = menuButton.getAttribute('aria-expanded') !== 'true';
+
+        nav.inert = !shouldOpen;
+        nav.setAttribute('aria-hidden', String(!shouldOpen));
+        nav.dataset.open = String(shouldOpen);
+        header.dataset.mobileNavOpen = String(shouldOpen);
+        menuButton.setAttribute('aria-expanded', String(shouldOpen));
+        menuButton.setAttribute('aria-label', shouldOpen ? 'Close navigation menu' : 'Open navigation menu');
+        openIcon.classList.toggle('hidden', shouldOpen);
+        closeIcon.classList.toggle('hidden', !shouldOpen);
     }
     </script>
     <!-- SweetAlert2 notifications -->
@@ -36,4 +45,3 @@
     @stack('scripts')
 </body>
 </html>
-
