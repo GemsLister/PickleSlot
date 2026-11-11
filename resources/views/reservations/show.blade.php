@@ -46,7 +46,7 @@
 
                 <div class="text-right">
                     <span class="text-xs uppercase tracking-wider text-emerald-200">Amount Due</span>
-                    <p class="text-3xl font-extrabold">${{ number_format($reservation->total_price, 2) }}</p>
+                    <p class="text-3xl font-extrabold">₱{{ number_format($reservation->total_price, 2) }}</p>
                 </div>
             </div>
         </div>
@@ -109,8 +109,8 @@
                                             </span>
                                         </td>
                                         <td class="py-3.5 px-4 text-center font-bold text-slate-900">{{ $item->quantity }}</td>
-                                        <td class="py-3.5 px-4 text-right text-slate-600">${{ number_format($item->unit_price, 2) }}</td>
-                                        <td class="py-3.5 px-4 text-right font-bold text-slate-900">${{ number_format($item->total_price, 2) }}</td>
+                                        <td class="py-3.5 px-4 text-right text-slate-600">₱{{ number_format($item->unit_price, 2) }}</td>
+                                        <td class="py-3.5 px-4 text-right font-bold text-slate-900">₱{{ number_format($item->total_price, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -122,16 +122,16 @@
             <!-- Price Breakdown Calculation -->
             <div class="rounded-2xl border border-slate-200 bg-slate-50/60 p-6 space-y-2.5 text-sm">
                 <div class="flex items-center justify-between text-slate-600">
-                    <span>Court Fee ({{ substr((string) $reservation->start_time, 0, 5) }}–{{ substr((string) $reservation->end_time, 0, 5) }} @ ${{ number_format($reservation->court_rate, 2) }}/hr{{ $reservation->displayCourts()->count() > 1 ? ' combined across '.$reservation->displayCourts()->count().' courts' : '' }}):</span>
-                    <span class="font-bold text-slate-900">${{ number_format($reservation->court_total, 2) }}</span>
+                    <span>Court Fee ({{ substr((string) $reservation->start_time, 0, 5) }}–{{ substr((string) $reservation->end_time, 0, 5) }} @ ₱{{ number_format($reservation->court_rate, 2) }}/hr{{ $reservation->displayCourts()->count() > 1 ? ' combined across '.$reservation->displayCourts()->count().' courts' : '' }}):</span>
+                    <span class="font-bold text-slate-900">₱{{ number_format($reservation->court_total, 2) }}</span>
                 </div>
                 <div class="flex items-center justify-between text-slate-600">
                     <span>Equipment Rental Subtotal:</span>
-                    <span class="font-bold text-slate-900">${{ number_format($reservation->equipment_total, 2) }}</span>
+                    <span class="font-bold text-slate-900">₱{{ number_format($reservation->equipment_total, 2) }}</span>
                 </div>
                 <div class="border-t border-slate-200 pt-3 flex items-baseline justify-between">
                     <span class="text-base font-extrabold text-slate-900">Total Price Due:</span>
-                    <span class="text-2xl font-black text-emerald-600">${{ number_format($reservation->total_price, 2) }}</span>
+                    <span class="text-2xl font-black text-emerald-600">₱{{ number_format($reservation->total_price, 2) }}</span>
                 </div>
             </div>
 

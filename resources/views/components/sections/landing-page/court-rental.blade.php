@@ -45,7 +45,7 @@
                             <span class="inline-flex items-center rounded-lg px-2.5 py-1 text-xs font-semibold {{ $court->type === 'indoor' ? 'bg-blue-50 text-blue-700 border border-blue-200/60' : ($court->type === 'covered' ? 'bg-amber-50 text-amber-700 border border-amber-200/60' : 'bg-emerald-50 text-emerald-700 border border-emerald-200/60') }} capitalize">
                                 {{ $court->type }}
                             </span>
-                            <span class="text-xl font-bold text-slate-900">${{ number_format($court->hourly_rate, 2) }}<span class="text-xs font-normal text-slate-500">/hr</span></span>
+                            <span class="text-xl font-bold text-slate-900">₱{{ number_format($court->hourly_rate, 2) }}<span class="text-xs font-normal text-slate-500">/hr</span></span>
                         </div>
 
                         <h3 class="text-lg font-bold text-slate-900 group-hover:text-emerald-600 transition-colors">{{ $court->name }}</h3>

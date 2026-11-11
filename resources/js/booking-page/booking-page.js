@@ -238,7 +238,7 @@ if (equipmentDataElement && bookedSlotsElement) {
         document.getElementById('submitBtn').disabled = selectedCourts.length === 0 || !selectedSlot.start;
 
         const courtFee = courtRate * selectedDurationHours;
-        document.getElementById('summaryCourtFee').innerText = `$${courtFee.toFixed(2)}`;
+        document.getElementById('summaryCourtFee').innerText = `₱${courtFee.toFixed(2)}`;
 
         // Calculate gear fees
         let gearFee = 0;
@@ -251,12 +251,12 @@ if (equipmentDataElement && bookedSlotsElement) {
                 if (qty > 0) {
                     const itemTotal = qty * parseFloat(eq.price);
                     gearFee += itemTotal;
-                    gearItems.push(`${qty}x ${eq.name} ($${itemTotal.toFixed(2)})`);
+                    gearItems.push(`${qty}x ${eq.name} (₱${itemTotal.toFixed(2)})`);
                 }
             }
         }
 
-        document.getElementById('summaryGearFee').innerText = `$${gearFee.toFixed(2)}`;
+        document.getElementById('summaryGearFee').innerText = `₱${gearFee.toFixed(2)}`;
 
         const gearListEl = document.getElementById('summaryGearList');
         if (gearItems.length > 0) {
@@ -273,7 +273,7 @@ if (equipmentDataElement && bookedSlotsElement) {
         }
 
         const total = courtFee + gearFee;
-        document.getElementById('summaryTotalFee').innerText = `$${total.toFixed(2)}`;
+        document.getElementById('summaryTotalFee').innerText = `₱${total.toFixed(2)}`;
     }
 
     Object.assign(window, {

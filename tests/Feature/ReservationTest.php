@@ -261,7 +261,7 @@ test('user can reserve multiple consecutive hours and is charged for each hour',
     $this->actingAs($user)
         ->get(route('reservations.show', $reservation))
         ->assertOk()
-        ->assertSee('Court Fee (10:00–12:00 @ $32.00/hr):');
+        ->assertSee('Court Fee (10:00–12:00 @ ₱32.00/hr):');
 });
 
 test('reservation is rejected when selected duration does not match the requested hours', function () {

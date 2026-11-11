@@ -44,7 +44,7 @@
                         </div>
                         <div class="rounded-xl bg-slate-50 p-4 border border-slate-100">
                             <p class="text-xs text-slate-400 uppercase font-bold tracking-wider">Hourly Rate</p>
-                            <p class="mt-1 font-bold text-emerald-600 text-lg">${{ number_format($court->hourly_rate, 2) }}
+                            <p class="mt-1 font-bold text-emerald-600 text-lg">₱{{ number_format($court->hourly_rate, 2) }}
                                 <span class="text-xs text-slate-500 font-normal">/ hour</span></p>
                         </div>
                     </div>
@@ -83,7 +83,7 @@
                     <p class="text-xs font-bold uppercase tracking-wider text-emerald-600">Reserve this court</p>
                     <div class="mt-2 flex items-baseline gap-2">
                         <span
-                            class="text-3xl font-extrabold text-slate-900">${{ number_format($court->hourly_rate, 2) }}</span>
+                            class="text-3xl font-extrabold text-slate-900">₱{{ number_format($court->hourly_rate, 2) }}</span>
                         <span class="text-sm text-slate-500">per 1-hour session</span>
                     </div>
 

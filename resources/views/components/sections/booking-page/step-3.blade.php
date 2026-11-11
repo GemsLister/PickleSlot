@@ -24,7 +24,7 @@
                         </div>
                         <p class="text-xs text-slate-500 mt-0.5">{{ $paddle->description }}</p>
                         <p class="text-xs font-semibold text-emerald-600 mt-1">
-                            ${{ number_format($paddle->price, 2) }} / session <span
+                            ₱{{ number_format($paddle->price, 2) }} / session <span
                                 class="text-slate-400 font-normal">({{ $paddle->stock }} in stock)</span>
                         </p>
                     </div>
@@ -61,7 +61,7 @@
                         </div>
                         <p class="text-xs text-slate-500 mt-0.5">{{ $ball->description }}</p>
                         <p class="text-xs font-semibold text-emerald-600 mt-1">
-                            ${{ number_format($ball->price, 2) }} / session <span
+                            ₱{{ number_format($ball->price, 2) }} / session <span
                                 class="text-slate-400 font-normal">({{ $ball->stock }} available)</span></p>
                     </div>
 

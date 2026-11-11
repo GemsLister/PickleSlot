@@ -60,7 +60,7 @@
             <div class="mt-6 flex items-center justify-between border-t border-slate-100 pt-4">
                 <div>
                     <span class="text-xs text-slate-400">Rental Price</span>
-                    <p class="text-xl font-bold text-slate-900">${{ number_format($paddle->price, 2) }} <span class="text-xs font-normal text-slate-500">/ session</span></p>
+                    <p class="text-xl font-bold text-slate-900">₱{{ number_format($paddle->price, 2) }} <span class="text-xs font-normal text-slate-500">/ session</span></p>
                 </div>
                 <x-buttons.primary-button href="{{ route('reservations.create') }}">
                     Rent in Booking

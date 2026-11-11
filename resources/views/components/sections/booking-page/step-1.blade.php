@@ -21,7 +21,7 @@
                             {{ $court->type }}
                         </span>
                         <span
-                            class="font-extrabold text-slate-900 text-base">${{ number_format($court->hourly_rate, 2) }}<span
+                            class="font-extrabold text-slate-900 text-base">₱{{ number_format($court->hourly_rate, 2) }}<span
                                 class="text-xs font-normal text-slate-500">/hr</span></span>
                     </div>
                     <h3 class="mt-2 text-base font-bold text-slate-900 leading-snug">{{ $court->name }}</h3>

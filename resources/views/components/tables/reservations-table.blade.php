@@ -43,7 +43,7 @@
                 <span class="text-slate-400">None</span>
                 @endforelse
             </td>
-            <td class="py-4 px-4 text-right font-black text-slate-900">${{ number_format($res->total_price, 2) }}</td>
+            <td class="py-4 px-4 text-right font-black text-slate-900">₱{{ number_format($res->total_price, 2) }}</td>
             <td class="py-4 px-4 text-center">
                 <span class="rounded-md px-2.5 py-0.5 text-xs font-bold uppercase tracking-wider {{ $res->status === 'confirmed' ? 'bg-emerald-50 text-emerald-700' : ($res->status === 'completed' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-700') }}">
                     {{ $res->status }}

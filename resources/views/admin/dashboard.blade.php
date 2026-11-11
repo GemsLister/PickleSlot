@@ -40,7 +40,7 @@
         <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
             <p class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Revenue</p>
             <div class="mt-2 flex items-baseline justify-between">
-                <p class="text-3xl font-black text-emerald-600">${{ number_format($totalRevenue, 2) }}</p>
+                <p class="text-3xl font-black text-emerald-600">₱{{ number_format($totalRevenue, 2) }}</p>
                 <span class="text-xs text-slate-400">courts & gear</span>
             </div>
         </div>
@@ -96,7 +96,7 @@
                                 </td>
                                 <td class="py-3.5 px-4 font-semibold text-slate-800">{{ $res->displayCourts()->pluck('name')->join(', ') }}</td>
                                 <td class="py-3.5 px-4 text-slate-600">{{ $res->user->name }}</td>
-                                <td class="py-3.5 px-4 text-right font-bold text-slate-900">${{ number_format($res->total_price, 2) }}</td>
+                                <td class="py-3.5 px-4 text-right font-bold text-slate-900">₱{{ number_format($res->total_price, 2) }}</td>
                                 <td class="py-3.5 px-4 text-center">
                                     <a href="{{ route('reservations.show', $res) }}" class="rounded-lg border border-slate-200 px-2.5 py-1 text-xs font-semibold text-slate-700 hover:bg-slate-50">
                                         View
@@ -148,7 +148,7 @@
                                     <span class="text-slate-400">None</span>
                                 @endforelse
                             </td>
-                            <td class="py-3.5 px-4 text-right font-bold text-slate-900">${{ number_format($res->total_price, 2) }}</td>
+                            <td class="py-3.5 px-4 text-right font-bold text-slate-900">₱{{ number_format($res->total_price, 2) }}</td>
                             <td class="py-3.5 px-4 text-center">
                                 <span class="rounded-md px-2 py-0.5 text-xs font-bold uppercase {{ $res->status === 'confirmed' ? 'bg-emerald-50 text-emerald-700' : ($res->status === 'completed' ? 'bg-blue-50 text-blue-700' : 'bg-red-50 text-red-700') }}">
                                     {{ $res->status }}

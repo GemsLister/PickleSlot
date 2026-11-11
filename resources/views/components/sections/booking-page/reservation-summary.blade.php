@@ -30,13 +30,13 @@
             <!-- Court Subtotal -->
             <div class="border-t border-slate-100 pt-3 flex items-center justify-between">
                 <span class="text-slate-600">Court Subtotal:</span>
-                <span id="summaryCourtFee" class="font-bold text-slate-900">$0.00</span>
+                <span id="summaryCourtFee" class="font-bold text-slate-900">₱0.00</span>
             </div>
 
             <!-- Gear Subtotal -->
             <div class="flex items-center justify-between">
                 <span class="text-slate-600">Gear Rental:</span>
-                <span id="summaryGearFee" class="font-bold text-slate-900">$0.00</span>
+                <span id="summaryGearFee" class="font-bold text-slate-900">₱0.00</span>
             </div>
 
             <!-- Rented Gear Items breakdown -->
@@ -50,7 +50,7 @@
                     <span class="text-base font-extrabold text-slate-900">Total Due</span>
                     <p class="text-[11px] text-slate-400">Payable at check-in</p>
                 </div>
-                <span id="summaryTotalFee" class="text-2xl font-black text-emerald-600">$0.00</span>
+                <span id="summaryTotalFee" class="text-2xl font-black text-emerald-600">₱0.00</span>
             </div>
         </div>
 

@@ -69,7 +69,7 @@
                         <div>
                             <span class="text-xs text-slate-400">Rental fee</span>
                             <p class="text-lg font-bold text-slate-900">
-                                ${{ number_format($item->price, 2) }}
+                                ₱{{ number_format($item->price, 2) }}
                                 <span class="text-xs font-normal text-slate-500">/ session</span>
                             </p>
                         </div>

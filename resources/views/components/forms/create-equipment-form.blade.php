@@ -18,7 +18,7 @@
         </div>
 
         <div>
-            <label for="price" class="block text-sm font-semibold text-slate-700">Rental Price ($/session)</label>
+            <label for="price" class="block text-sm font-semibold text-slate-700">Rental Price (₱/session)</label>
             <input id="price" name="price" type="number" step="0.50" min="0" required value="{{ old('price', 5.00) }}"
                 class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
         </div>

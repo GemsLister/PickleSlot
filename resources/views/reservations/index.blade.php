@@ -115,7 +115,7 @@
                                 class="flex flex-row md:flex-col items-center md:items-end justify-between gap-3 border-t md:border-t-0 pt-4 md:pt-0 border-slate-100">
                                 <div class="text-right">
                                     <span class="text-xs text-slate-400">Total Price</span>
-                                    <p class="text-2xl font-black text-slate-900">${{ number_format($reservation->total_price, 2) }}
+                                    <p class="text-2xl font-black text-slate-900">₱{{ number_format($reservation->total_price, 2) }}
                                     </p>
                                 </div>
 

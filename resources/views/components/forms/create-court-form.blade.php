@@ -19,7 +19,7 @@
         </div>
 
         <div>
-            <label for="hourly_rate" class="block text-sm font-semibold text-slate-700">Hourly Rate ($)</label>
+            <label for="hourly_rate" class="block text-sm font-semibold text-slate-700">Hourly Rate (₱)</label>
             <input id="hourly_rate" name="hourly_rate" type="number" step="0.50" min="0" required value="{{ old('hourly_rate', 25.00) }}"
                 class="mt-1 block w-full rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm text-slate-900 shadow-sm focus:border-emerald-500 focus:outline-none focus:ring-2 focus:ring-emerald-500/20">
         </div>
