@@ -12,6 +12,28 @@ PickleSlot is a Laravel application for browsing pickleball courts and rental eq
 - Administer courts, equipment, and reservation statuses through the admin area.
 - Restrict booking actions to player accounts; administrators use the facility management area.
 
+## Admin screenshots
+
+### Admin control center
+
+![PickleSlot admin control center](public/images/admin-control-center.png)
+
+### Manage courts
+
+![PickleSlot court management](public/images/admin-court-manage.png)
+
+### Manage equipment and inventory
+
+![PickleSlot equipment and inventory management](public/images/admin-equipment-manage.png)
+
+### Add a court
+
+![PickleSlot add court form](public/images/admin-add-court.png)
+
+### Add equipment
+
+![PickleSlot add equipment form](public/images/admin-add-equipment.png)
+
 ## Requirements
 
 - PHP 8.3 or later (the Docker image uses PHP 8.5)
